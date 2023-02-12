@@ -27,15 +27,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.yourssohail.jetpackworkmanager.data.WorkerRepository
 import com.yourssohail.jetpackworkmanager.ui.WorkerFactory
 import com.yourssohail.jetpackworkmanager.ui.WorkerViewModel
 import com.yourssohail.jetpackworkmanager.ui.theme.JetpackWorkmanagerTheme
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,8 +55,9 @@ fun WorkManagerScreen() {
     var imageUri by remember {
         mutableStateOf<Uri?>(null)
     }
-    val workerFactory = WorkerFactory(WorkerRepository(LocalContext.current))
-    val workerViewModel: WorkerViewModel = viewModel(factory = workerFactory)
+    val context = LocalContext.current
+    val workerFactory = WorkerFactory(WorkerRepository())
+    val workerViewModel = hiltViewModel<WorkerViewModel>();
     Column(modifier = Modifier.padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         ImagePickerCard {
             imageUri = it
@@ -61,7 +65,7 @@ fun WorkManagerScreen() {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             if(imageUri != null) {
                 Button(onClick = {
-                    workerViewModel.compressImage(imageUri!!)
+                    workerViewModel.compressImage(imageUri!!,context)
                 }) {
                     Text(text = "Compress")
                 }

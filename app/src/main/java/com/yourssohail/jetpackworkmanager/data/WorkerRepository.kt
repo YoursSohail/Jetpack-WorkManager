@@ -9,10 +9,10 @@ import com.yourssohail.jetpackworkmanager.workers.CompressWorker
 import com.yourssohail.jetpackworkmanager.workers.KEY_IMAGE_URI
 import com.yourssohail.jetpackworkmanager.workers.SaveImageWorker
 
-class WorkerRepository(context: Context): IWorkerRepository {
+class WorkerRepository: IWorkerRepository {
 
-    private val workManager = WorkManager.getInstance(context)
-    override fun compressImage(uri: Uri) {
+    override fun compressImage(uri: Uri,context: Context) {
+        val workManager = WorkManager.getInstance(context)
         val compressWorker = OneTimeWorkRequestBuilder<CompressWorker>()
             .setInputData(createInputDataForWorkRequest(uri))
             .build()
